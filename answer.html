@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your answer is...</title>
+    <script>
+        window.onload = function() {
+            document.getElementById("btnAnswer").onclick = function() {
+                fetch("https://yesno.wtf/api?force=maybe").then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error("Network response was not OK: " + response.status);
+                }).then(function(answer) {
+                    document.getElementById("answer").innerText = answer.answer;
+                    document.getElementById("picture").innerHTML =
+                        "<img src='" + answer.image + "' alt='" + answer.answer + "' />";
+                }).catch(function(error) {
+                    console.log("Problem with the fetch operation: " + error.message);
+                });
+            };
+        };
+    </script>
+</head>
+<body>
+    <p><input id="btnAnswer" type="button" value="Your answer is..." /> <span id="answer"></span></p>
+    <p id="picture"></p>
+</body>
+</html>

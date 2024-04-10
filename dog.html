@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Dog using CORS</title>
+    <script src="scripts/cookieutils.js"></script>
+    <script>
+        window.onload = function() {
+            let url = readCookie("url");
+            if (url !== undefined) {
+                document.getElementById("dogInfo").innerText = url;
+            }
+
+            document.getElementById("btnGetDog").onclick = function() {
+                fetch("https://random.dog/woof.json").then(function(response) {
+                   if (response.ok) {
+                       return response.json();
+                   }
+                   throw new Error("Network response was not OK: " + response.status);
+                }).then(function(dog) {
+                   document.getElementById("dogInfo").innerText = dog.url;
+                   if (dog.url.endsWith(".mp4") || dog.url.endsWith(".webm")) {
+                       document.getElementById("dogImage").innerHTML =
+                           "<video src='" + dog.url + "' controls></video>";
+                   } else {
+                       document.getElementById("dogImage").innerHTML =
+                           "<img src='" + dog.url + "' alt='Random dog' />";
+                   }
+                    setCookie("url", dog.url, 7);
+                }).catch(function(error) {
+                    console.log("Problem with the fetch operation: " + error.message);
+                });
+            };
+        };
+    </script>
+</head>
+<body>
+    <p>
+        <button id="btnGetDog">Get dog</button>
+    </p>
+    <p id="dogInfo"></p>
+    <p id="dogImage"></p>
+</body>
+</html>
